@@ -13,8 +13,19 @@ repositories {
 }
 
 dependencies {
+    def lombokVersion = '1.18.24'
+    def dockerJavaCoreVersion = '3.2.13'
+    def dockerJavaTransportVersion = '3.2.13'
+
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    implementation "com.github.docker-java:docker-java-core:$dockerJavaCoreVersion"
+    implementation "com.github.docker-java:docker-java-transport-httpclient5:$dockerJavaTransportVersion"
 }
 
 tasks.named('test') {
