@@ -1,6 +1,6 @@
 package com.k4ktyc.dockertelegramnotifier.docker.service;
 
-import com.k4ktyc.dockertelegramnotifier.docker.dto.PastDockerEvents;
+import com.k4ktyc.dockertelegramnotifier.docker.dto.NotPersistedPastDockerEvents;
 import com.k4ktyc.dockertelegramnotifier.docker.model.DockerEventEntity;
 import com.k4ktyc.dockertelegramnotifier.docker.repository.DockerEventRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,17 +18,17 @@ public class DockerEventService {
     private final DockerEventRepository eventRepository;
 
 
-    @EventListener
-    public void processPastDockerEvent(PastDockerEvents pastDockerEvents) {
-        List<DockerEventEntity> existingEvents = eventRepository.findAll();
-        List<DockerEventEntity> pastEvents = pastDockerEvents.getEvents();
-        pastEvents.removeAll(existingEvents);
-        eventRepository.saveAll(pastEvents);
-        log.info("New past events found: " + pastEvents.size());
+    public List<DockerEventEntity> findAll() {
+        return eventRepository.findAll();
     }
 
     @EventListener
-    public void processDockerEvent(DockerEventEntity eventEntity) {
+    public void persistPastDockerEvents(NotPersistedPastDockerEvents notPersistedPastDockerEvents) {
+        eventRepository.saveAll(notPersistedPastDockerEvents.getEvents());
+    }
 
+    @EventListener
+    public void persistDockerEvent(DockerEventEntity eventEntity) {
+        eventRepository.save(eventEntity);
     }
 }

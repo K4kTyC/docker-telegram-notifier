@@ -2,9 +2,10 @@ package com.k4ktyc.dockertelegramnotifier.docker.callback;
 
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Event;
-import com.k4ktyc.dockertelegramnotifier.docker.dto.PastDockerEvents;
+import com.k4ktyc.dockertelegramnotifier.docker.dto.NotPersistedPastDockerEvents;
 import com.k4ktyc.dockertelegramnotifier.docker.mapper.EventMapper;
 import com.k4ktyc.dockertelegramnotifier.docker.model.DockerEventEntity;
+import com.k4ktyc.dockertelegramnotifier.docker.service.DockerEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,6 +22,7 @@ public class DockerPastEventListenerCallback extends ResultCallback.Adapter<Even
 
     private final EventMapper eventMapper;
     private final ApplicationEventPublisher eventPublisher;
+    private final DockerEventService eventService;
 
     private List<DockerEventEntity> pastEvents;
 
@@ -28,7 +30,7 @@ public class DockerPastEventListenerCallback extends ResultCallback.Adapter<Even
     @Override
     public void onStart(Closeable stream) {
         super.onStart(stream);
-        log.info("Started searching for past events");
+        log.info("Start searching for past events");
         pastEvents = new ArrayList<>();
     }
 
@@ -41,7 +43,9 @@ public class DockerPastEventListenerCallback extends ResultCallback.Adapter<Even
     @Override
     public void onComplete() {
         super.onComplete();
-        eventPublisher.publishEvent(new PastDockerEvents(pastEvents));
-        log.info("Stopped searching for past events");
+        List<DockerEventEntity> persistedEvents = eventService.findAll();
+        pastEvents.removeAll(persistedEvents);
+        log.info("Stop searching for past events (found: " + pastEvents.size() + ")");
+        eventPublisher.publishEvent(new NotPersistedPastDockerEvents(pastEvents));
     }
 }

@@ -24,11 +24,13 @@ public class DockerEventListenerService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void startListening() {
+        Instant now = Instant.now();
         dockerClient.eventsCmd()
-                .withUntil(String.valueOf(Instant.now().getEpochSecond()))
+                .withUntil(now.getEpochSecond() + "." + now.getNano())
                 .exec(pastEventListenerCallback);
 
         dockerClient.eventsCmd()
+                .withSince(now.getEpochSecond() + "." + now.getNano())
                 .exec(eventListenerCallback);
     }
 

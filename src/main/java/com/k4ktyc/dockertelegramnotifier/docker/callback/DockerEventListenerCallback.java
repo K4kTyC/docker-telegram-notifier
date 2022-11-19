@@ -23,7 +23,7 @@ public class DockerEventListenerCallback extends ResultCallback.Adapter<Event> {
     @Override
     public void onStart(Closeable stream) {
         super.onStart(stream);
-        log.info("Started listening for events");
+        log.info("Start listening for events");
     }
 
     @Override
@@ -35,6 +35,6 @@ public class DockerEventListenerCallback extends ResultCallback.Adapter<Event> {
     @Override
     public void onComplete() {
         super.onComplete();
-        log.info("Stopped listening for events");
+        log.info("Stop listening for events");
     }
 }

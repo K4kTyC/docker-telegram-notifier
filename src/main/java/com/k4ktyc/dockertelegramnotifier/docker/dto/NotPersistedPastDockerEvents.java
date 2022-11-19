@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter @Setter
 @AllArgsConstructor
-public class PastDockerEvents {
+public class NotPersistedPastDockerEvents {
 
     private List<DockerEventEntity> events;
 }
