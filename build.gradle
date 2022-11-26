@@ -19,6 +19,7 @@ dependencies {
 
     def dockerJavaCoreVersion = '3.2.13'
     def dockerJavaTransportVersion = '3.2.13'
+    def telegramBotsVersion = '6.3.0'
 
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -34,6 +35,8 @@ dependencies {
 
     implementation "com.github.docker-java:docker-java-core:$dockerJavaCoreVersion"
     implementation "com.github.docker-java:docker-java-transport-httpclient5:$dockerJavaTransportVersion"
+    implementation "org.telegram:telegrambots:$telegramBotsVersion"
+
 }
 
 tasks.named('test') {
