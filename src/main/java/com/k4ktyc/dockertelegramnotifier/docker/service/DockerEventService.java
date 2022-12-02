@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.github.dockerjava.api.model.EventType.CONTAINER;
 
@@ -45,27 +46,29 @@ public class DockerEventService {
 
     public String buildMessageForTelegram(DockerEventEntity eventEntity) {
         if (CONTAINER.equals(eventEntity.getEventType())) {
-            Container container = getContainerById(eventEntity.getContainerId());
+            Optional<Container> container = getContainerById(eventEntity.getContainerId());
 
             String eventType = eventEntity.getEventType().getValue().toLowerCase();
-            String containerName = container.getNames()[0];
-            String image = container.getImage();
+            String containerName = container.map(c -> c.getNames()[0].substring(1))
+                    .orElseGet(eventEntity::getContainerId);
+            String image = eventEntity.getImageTag();
             String action = eventEntity.getAction();
             String timestamp = Instant.ofEpochSecond(0, eventEntity.getTimestampNano())
                     .atZone(ZoneId.of("Europe/Minsk"))
                     .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
 
-            return StringUtils.capitalize(String.format("%s %s(%s): %s | %s",
+            return StringUtils.capitalize(String.format("%s %s(%s):\n %s at %s",
                     eventType, containerName, image, action, timestamp));
         } else {
             return "";
         }
     }
 
-    private Container getContainerById(String id) {
+    private Optional<Container> getContainerById(String id) {
         return dockerClient.listContainersCmd()
                 .withIdFilter(Collections.singletonList(id))
                 .exec()
-                .get(0);
+                .stream()
+                .findFirst();
     }
 }
