@@ -9,7 +9,6 @@ import com.k4ktyc.dockertelegramnotifier.docker.service.DockerEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
 public class DockerPastEventListenerCallback extends ResultCallback.Adapter<Event> {
 
     private final EventMapper eventMapper;

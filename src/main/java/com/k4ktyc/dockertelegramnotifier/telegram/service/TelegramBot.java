@@ -1,9 +1,12 @@
 package com.k4ktyc.dockertelegramnotifier.telegram.service;
 
 import com.k4ktyc.dockertelegramnotifier.config.TelegramBotConfig;
+import com.k4ktyc.dockertelegramnotifier.docker.model.DockerEventEntity;
 import com.k4ktyc.dockertelegramnotifier.telegram.model.TelegramUserEntity;
 import com.k4ktyc.dockertelegramnotifier.telegram.repository.TelegramUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -44,6 +48,17 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    @EventListener
+    public void onDockerEventReceived(DockerEventEntity eventEntity) {
+        String text = eventEntity.getEventType() + " " + eventEntity.getAction();
+        sendMessageToAllUsers(text);
+    }
+
+    public void sendMessageToAllUsers(String messageToSend) {
+        userRepository.findAllChatIds()
+                .forEach(chat -> sendMessage(chat, messageToSend));
+    }
+
     private void processStartCommand(Long chatId, String userName) {
         if (userRepository.findById(chatId).isEmpty()) {
             TelegramUserEntity user = new TelegramUserEntity();
@@ -64,7 +79,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
         }
     }
 }
