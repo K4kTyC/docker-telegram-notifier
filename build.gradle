@@ -16,9 +16,10 @@ dependencies {
     def lombokVersion = '1.18.24'
     def mariadbDriverVersion = '3.0.6'
     def mapstructVersion = '1.5.3.Final'
+    def commonsLangVersion = '3.12.0'
 
-    def dockerJavaCoreVersion = '3.2.13'
-    def dockerJavaTransportVersion = '3.2.13'
+    def dockerJavaCoreVersion = '3.2.14'
+    def dockerJavaTransportVersion = '3.2.14'
     def telegramBotsVersion = '6.3.0'
 
     implementation 'org.springframework.boot:spring-boot-starter'
@@ -30,7 +31,7 @@ dependencies {
     implementation "org.mariadb.jdbc:mariadb-java-client:$mariadbDriverVersion"
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
-
+    implementation "org.apache.commons:commons-lang3:$commonsLangVersion"
 
     implementation "com.github.docker-java:docker-java-core:$dockerJavaCoreVersion"
     implementation "com.github.docker-java:docker-java-transport-httpclient5:$dockerJavaTransportVersion"

@@ -2,10 +2,12 @@ package com.k4ktyc.dockertelegramnotifier.telegram.service;
 
 import com.k4ktyc.dockertelegramnotifier.config.TelegramBotConfig;
 import com.k4ktyc.dockertelegramnotifier.docker.model.DockerEventEntity;
+import com.k4ktyc.dockertelegramnotifier.docker.service.DockerEventService;
 import com.k4ktyc.dockertelegramnotifier.telegram.model.TelegramUserEntity;
 import com.k4ktyc.dockertelegramnotifier.telegram.repository.TelegramUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -21,6 +23,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final TelegramBotConfig botConfig;
     private final TelegramUserRepository userRepository;
+
+    private final DockerEventService dockerEventService;
 
 
     @Override
@@ -50,8 +54,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @EventListener
     public void onDockerEventReceived(DockerEventEntity eventEntity) {
-        String text = eventEntity.getEventType() + " " + eventEntity.getAction();
-        sendMessageToAllUsers(text);
+        String message = dockerEventService.buildMessageForTelegram(eventEntity);
+        if (StringUtils.isNotBlank(message)) {
+            sendMessageToAllUsers(message);
+        }
     }
 
     public void sendMessageToAllUsers(String messageToSend) {
