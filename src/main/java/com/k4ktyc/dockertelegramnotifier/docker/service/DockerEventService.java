@@ -57,7 +57,7 @@ public class DockerEventService {
                     .atZone(ZoneId.of("Europe/Minsk"))
                     .format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
 
-            return StringUtils.capitalize(String.format("%s %s(%s):\n %s at %s",
+            return StringUtils.capitalize(String.format("%s %s [%s]:\n%s at %s",
                     eventType, containerName, image, action, timestamp));
         } else {
             return "";

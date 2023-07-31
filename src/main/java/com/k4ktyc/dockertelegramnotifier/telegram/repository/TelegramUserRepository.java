@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface TelegramUserRepository extends JpaRepository<TelegramUserEntity, Long> {
 
-    @Query("select user.chatId from #{#entityName} user")
-    List<Long> findAllChatIds();
+    @Query("SELECT user.chatId FROM #{#entityName} user WHERE user.receiveUpdates IS TRUE")
+    List<Long> findAllChatIdsSubscribed();
 }

@@ -18,4 +18,8 @@ public class TelegramUserEntity {
 
     @Column(name = "user_name", nullable = false)
     private String userName;
+
+    @Column(name = "receive_updates", nullable = false)
+    private Boolean receiveUpdates;
+
 }

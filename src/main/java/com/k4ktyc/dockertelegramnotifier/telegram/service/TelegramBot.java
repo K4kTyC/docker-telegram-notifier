@@ -16,6 +16,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -25,6 +27,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final TelegramUserRepository userRepository;
 
     private final DockerEventService dockerEventService;
+
+    private static final String WELCOME_MESSAGE = "Receiving events from Docker was started";
+    private static final String PAUSED_MESSAGE = "Receiving events from Docker was paused";
+    private static final String RESUMED_MESSAGE = "Receiving events from Docker was resumed";
 
 
     @Override
@@ -45,8 +51,10 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (botConfig.getAllowedUserNames().contains(userName)) {
                 Long chatId = message.getChatId();
                 String text = message.getText();
-                if ("/start".equals(text)) {
-                    processStartCommand(chatId, userName);
+                switch (text) {
+                    case "/start" -> processStartCommand(chatId, userName);
+                    case "/pause" -> processPauseCommand(chatId);
+                    case "/resume" -> processResumeCommand(chatId);
                 }
             }
         }
@@ -56,24 +64,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onDockerEventReceived(DockerEventEntity eventEntity) {
         String message = dockerEventService.buildMessageForTelegram(eventEntity);
         if (StringUtils.isNotBlank(message)) {
-            sendMessageToAllUsers(message);
-        }
-    }
-
-    public void sendMessageToAllUsers(String messageToSend) {
-        userRepository.findAllChatIds()
-                .forEach(chat -> sendMessage(chat, messageToSend));
-    }
-
-    private void processStartCommand(Long chatId, String userName) {
-        if (userRepository.findById(chatId).isEmpty()) {
-            TelegramUserEntity user = new TelegramUserEntity();
-            user.setChatId(chatId);
-            user.setUserName(userName);
-
-            userRepository.save(user);
-
-            sendMessage(chatId, "hello");
+            sendMessageToSubscribedUsers(message);
         }
     }
 
@@ -86,6 +77,44 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(message);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
+        }
+    }
+
+    public void sendMessageToSubscribedUsers(String messageToSend) {
+        userRepository.findAllChatIdsSubscribed()
+                .forEach(chat -> sendMessage(chat, messageToSend));
+    }
+
+
+    private void processStartCommand(Long chatId, String userName) {
+        if (!userRepository.existsById(chatId)) {
+            TelegramUserEntity user = new TelegramUserEntity();
+            user.setChatId(chatId);
+            user.setUserName(userName);
+            user.setReceiveUpdates(true);
+            userRepository.save(user);
+
+            sendMessage(chatId, WELCOME_MESSAGE);
+        }
+    }
+
+    private void processPauseCommand(Long chatId) {
+        Optional<TelegramUserEntity> user = userRepository.findById(chatId);
+        if (user.isPresent() && user.get().getReceiveUpdates()) {
+            user.get().setReceiveUpdates(false);
+            userRepository.save(user.get());
+
+            sendMessage(chatId, PAUSED_MESSAGE);
+        }
+    }
+
+    private void processResumeCommand(Long chatId) {
+        Optional<TelegramUserEntity> user = userRepository.findById(chatId);
+        if (user.isPresent() && !user.get().getReceiveUpdates()) {
+            user.get().setReceiveUpdates(true);
+            userRepository.save(user.get());
+
+            sendMessage(chatId, RESUMED_MESSAGE);
         }
     }
 }

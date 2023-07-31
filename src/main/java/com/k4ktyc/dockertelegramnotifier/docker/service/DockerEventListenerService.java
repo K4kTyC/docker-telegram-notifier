@@ -49,7 +49,7 @@ public class DockerEventListenerService {
     @EventListener(DockerEventListenerStoppedEvent.class)
     public void restartListener() {
         if (restartAttempts >= 50) {
-            telegramBot.sendMessageToAllUsers("Unable to restart docker event listener");
+            telegramBot.sendMessageToSubscribedUsers("Unable to restart docker event listener");
         } else {
             if (restartAttempts++ % 5 != 0) {
                 startListener();
