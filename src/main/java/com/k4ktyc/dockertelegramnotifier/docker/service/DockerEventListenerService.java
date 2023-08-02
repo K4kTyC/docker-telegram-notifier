@@ -3,9 +3,9 @@ package com.k4ktyc.dockertelegramnotifier.docker.service;
 import com.github.dockerjava.api.DockerClient;
 import com.k4ktyc.dockertelegramnotifier.docker.callback.DockerEventListenerCallback;
 import com.k4ktyc.dockertelegramnotifier.docker.callback.DockerPastEventListenerCallback;
-import com.k4ktyc.dockertelegramnotifier.docker.events.DockerEventListenerStoppedEvent;
+import com.k4ktyc.dockertelegramnotifier.docker.event.DockerEventListenerFailedToRestartEvent;
+import com.k4ktyc.dockertelegramnotifier.docker.event.DockerEventListenerStoppedEvent;
 import com.k4ktyc.dockertelegramnotifier.docker.mapper.EventMapper;
-import com.k4ktyc.dockertelegramnotifier.telegram.service.TelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -28,8 +28,6 @@ public class DockerEventListenerService {
     private final ApplicationEventPublisher eventPublisher;
     private final DockerEventService eventService;
 
-    private final TelegramBot telegramBot;
-
     private int restartAttempts = 0;
     private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
@@ -49,7 +47,7 @@ public class DockerEventListenerService {
     @EventListener(DockerEventListenerStoppedEvent.class)
     public void restartListener() {
         if (restartAttempts >= 50) {
-            telegramBot.sendMessageToSubscribedUsers("Unable to restart docker event listener");
+            eventPublisher.publishEvent(new DockerEventListenerFailedToRestartEvent());
         } else {
             if (restartAttempts++ % 5 != 0) {
                 startListener();

@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Locale;
 
 @Data
 @Table(name = "telegram_user")
@@ -19,7 +20,10 @@ public class TelegramUserEntity {
     @Column(name = "user_name", nullable = false)
     private String userName;
 
-    @Column(name = "receive_updates", nullable = false)
-    private Boolean receiveUpdates;
+    @Column(name = "subscribed", nullable = false)
+    private Boolean subscribed;
+
+    @Column(name = "locale", nullable = false)
+    private Locale locale;
 
 }

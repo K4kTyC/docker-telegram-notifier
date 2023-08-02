@@ -2,7 +2,7 @@ package com.k4ktyc.dockertelegramnotifier.docker.callback;
 
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Event;
-import com.k4ktyc.dockertelegramnotifier.docker.events.DockerEventListenerStoppedEvent;
+import com.k4ktyc.dockertelegramnotifier.docker.event.DockerEventListenerStoppedEvent;
 import com.k4ktyc.dockertelegramnotifier.docker.mapper.EventMapper;
 import com.k4ktyc.dockertelegramnotifier.docker.model.DockerEventEntity;
 import lombok.RequiredArgsConstructor;
