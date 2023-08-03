@@ -23,10 +23,21 @@ public class DockerEventEntity {
     @Column(name = "id", nullable = false)
     @EqualsAndHashCode.Exclude
     private Long id;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "event_type")
     private EventType eventType;
+
+    @Column(name = "action")
     private String action;
+
+    @Column(name = "image_tag")
     private String imageTag;
+
+    @Column(name = "container_id")
     private String containerId;
+
+    @Column(name = "timestamp_nano")
     private Long timestampNano;
+
 }

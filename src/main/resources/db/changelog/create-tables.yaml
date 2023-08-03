@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: add_docker_event
+      author: K4kTyC
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_docker_event
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: event_type
+                  type: VARCHAR(255)
+              - column:
+                  name: action
+                  type: VARCHAR(255)
+              - column:
+                  name: image_tag
+                  type: VARCHAR(255)
+              - column:
+                  name: container_id
+                  type: VARCHAR(255)
+              - column:
+                  name: timestamp_nano
+                  type: BIGINT
+            tableName: docker_event
+  - changeSet:
+      id: add_telegram_user
+      author: K4kTyC
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_telegram_user
+                  name: chat_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user_name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: subscribed
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: locale
+                  type: VARCHAR(255)
+            tableName: telegram_user
+

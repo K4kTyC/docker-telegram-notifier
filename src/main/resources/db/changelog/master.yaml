@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: create-sequences.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: create-tables.yaml
+      relativeToChangelogFile: true

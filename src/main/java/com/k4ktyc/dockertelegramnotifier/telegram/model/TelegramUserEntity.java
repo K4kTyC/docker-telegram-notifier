@@ -9,8 +9,8 @@ import javax.persistence.Table;
 import java.util.Locale;
 
 @Data
-@Table(name = "telegram_user")
 @Entity
+@Table(name = "telegram_user")
 public class TelegramUserEntity {
 
     @Id

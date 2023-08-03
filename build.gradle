@@ -15,6 +15,7 @@ repositories {
 dependencies {
     def lombokVersion = '1.18.24'
     def mariadbDriverVersion = '3.0.6'
+    def liquibaseVersion = '4.23.0'
     def mapstructVersion = '1.5.3.Final'
     def commonsLangVersion = '3.12.0'
 
@@ -29,6 +30,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:$lombokVersion"
     annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     implementation "org.mariadb.jdbc:mariadb-java-client:$mariadbDriverVersion"
+    implementation "org.liquibase:liquibase-core:$liquibaseVersion"
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
     implementation "org.apache.commons:commons-lang3:$commonsLangVersion"
