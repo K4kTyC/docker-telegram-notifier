@@ -13,15 +13,15 @@ repositories {
 }
 
 dependencies {
-    def lombokVersion = '1.18.24'
-    def mariadbDriverVersion = '3.0.6'
+    def lombokVersion = '1.18.26'
+    def mariadbDriverVersion = '3.1.2'
     def liquibaseVersion = '4.23.0'
     def mapstructVersion = '1.5.3.Final'
     def commonsLangVersion = '3.12.0'
 
-    def dockerJavaCoreVersion = '3.2.14'
-    def dockerJavaTransportVersion = '3.2.14'
-    def telegramBotsVersion = '6.3.0'
+    def dockerJavaCoreVersion = '3.3.0'
+    def dockerJavaTransportVersion = '3.3.0'
+    def telegramBotsVersion = '6.5.0'
 
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
